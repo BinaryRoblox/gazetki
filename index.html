@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wirtualne Gazetki</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 40px;
+        }
+
+        /* Lewy górny róg - Tytuł / Logo */
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+        }
+
+        .logo span {
+            color: #3498db;
+        }
+
+        /* Główny kontener aplikacji */
+        .app-wrapper {
+            width: 100%;
+            max-width: 700px;
+            margin: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .view-section {
+            display: none;
+            width: 100%;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 1. Strona Główna (Landing Page) */
+        .hero-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero-container h1 {
+            font-size: 42px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .hero-container p {
+            color: #7f8c8d;
+            font-size: 18px;
+            margin-bottom: 35px;
+        }
+
+        .cta-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 16px 35px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .cta-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(52, 152, 219, 0.4);
+        }
+
+        .cta-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 2. Panel Logowania / Hasła */
+        .card-container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        .card-container h2 {
+            font-size: 26px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .card-container p {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input[type="password"] {
+            padding: 14px 20px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+            text-align: center;
+        }
+
+        input:focus {
+            border-color: #3498db;
+        }
+
+        button.action-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button.action-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .secondary-btn {
+            background-color: #95a5a6 !important;
+        }
+
+        .secondary-btn:hover {
+            background-color: #7f8c8d !important;
+        }
+
+        .error-msg {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* 3. Sekcja Wyświetlania Gazetki */
+        .gazetka-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            width: 100%;
+        }
+
+        .gazetka-box h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .image-wrapper {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            background: #f9f9f9;
+            margin-bottom: 20px;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Stopka */
+        footer {
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        /* RORV - RWD dla małych ekranów */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            .hero-container h1 {
+                font-size: 30px;
+            }
+            .hero-container p {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Górny pasek z tytułem po lewej stronie -->
+    <header>
+        <div class="logo" onclick="pokazWidok('home-view')">Gazetki<span>.</span></div>
+    </header>
+
+    <!-- Główna zawartość -->
+    <div class="app-wrapper">
+        
+        <!-- STRONA GŁÓWNA (LANDING PAGE) -->
+        <div id="home-view" class="view-section active">
+            <div class="hero-container">
+                <h1>Codziennie nowe gazetki<br>i codziennie najlepsze.</h1>
+                <p>Odkrywaj najciekawsze treści i najnowsze wydania w jednym miejscu.</p>
+                <button class="cta-btn" onclick="pokazWidok('login-view')">Otwórz najnowszą gazetkę</button>
+            </div>
+        </div>
+
+        <!-- PANEL LOGOWANIA -->
+        <div id="login-view" class="view-section">
+            <div class="card-container">
+                <h2>Podaj Hasło</h2>
+                <p>Wpisz hasło, aby uzyskać dostęp do najnowszego wydania.</p>
+                
+                <div class="input-group">
+                    <input type="password" id="password-input" placeholder="Wpisz hasło...">
+                    <button class="action-btn" onclick="sprawdzHaslo()">Zatwierdź</button>
+                    <button class="action-btn secondary-btn" onclick="pokazWidok('home-view')">Wróć</button>
+                </div>
+                <div class="error-msg" id="error-msg">Niepoprawne hasło! Spróbuj ponownie.</div>
+            </div>
+        </div>
+
+        <!-- SEKCJA GAZETKI -->
+        <div id="gazetka-view" class="view-section">
+            <div class="gazetka-box">
+                <h2>Najnowsza Gazetka</h2>
+                <div class="image-wrapper">
+                    <img src="gazeta.png" alt="Najnowsza gazetka">
+                </div>
+                <button class="action-btn secondary-btn" onclick="pokazWidok('home-view')">Wróć na stronę główną</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Stopka -->
+    <footer>
+        &copy; 2026 Wirtualne Gazetki. Wszelkie prawa zastrzeżone.
+    </footer>
+
+    <script>
+        // Płynne przełączanie widoków
+        function pokazWidok(widokId) {
+            const sekcje = document.querySelectorAll('.view-section');
+            sekcje.forEach(sekcja => {
+                sekcja.classList.remove('active');
+            });
+
+            document.getElementById(widokId).classList.add('active');
+
+            // Jeśli wchodzimy w ekran logowania, czyścimy pole i ustawiamy focus
+            if (widokId === 'login-view') {
+                document.getElementById('password-input').value = '';
+                document.getElementById('error-msg').style.display = 'none';
+                document.getElementById('password-input').focus();
+            }
+        }
+
+        // Sprawdzanie hasła
+        function sprawdzHaslo() {
+            const wpisaneHaslo = document.getElementById('password-input').value;
+            const poprawneHaslo = "Q18W9F"; // Tutaj możesz zmienić hasło
+            const errorMsg = document.getElementById('error-msg');
+
+            if (wpisaneHaslo === poprawneHaslo) {
+                errorMsg.style.display = 'none';
+                pokazWidok('gazetka-view');
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        // Obsługa klawisza Enter w polu hasła
+        document.getElementById('password-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sprawdzHaslo();
+            }
+        });
+    </script>
+
+</body>
+</html>
